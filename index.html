@@ -55,12 +55,18 @@
 		.almostequal { background: #ffffd5; font-size: 20px; font-weight: bold; }
 		.notequal { background: #ffd5d5; }
 		.wide { background: #F9F7F7; width: auto; padding: 0px 5px; }
+		.true { background: #d5ffd5; width: auto; padding: 0px 5px; }
+		.false { background: #ffd5d5; width: auto; padding: 0px 5px; }
+
+		.normal {
+			padding: 0px 5px;
+		}
 	</style>
 	<script>
 		function createCell(value, className) {
 			td = document.createElement('TD');
 			div = document.createElement('DIV');
-			div.innerText = value;
+			div.textContent = value;
 			if (typeof className != 'undefined') {
 				div.setAttribute('class', className);
 			}
@@ -72,11 +78,11 @@
 			if (typeof(className) == 'undefined') {
 				var div = document.createElement('DIV');
 				var span = document.createElement('SPAN');
-				span.innerText = value;
+				span.textContent = value;
 				div.appendChild(span);
 				th.appendChild(div);
 			} else {
-				th.innerText = value;
+				th.textContent = value;
 				th.setAttribute('class', className);
 			}
 			return th;
@@ -85,7 +91,7 @@
 		function createCaption(value) {
 			td = document.createElement('TD');
 			td.setAttribute('class', 'caption');
-			td.innerText = value;
+			td.textContent = value;
 			return td;
 		}
 
@@ -106,7 +112,7 @@
 				tr.appendChild(th);
 			}
 
-			th = createHead('if', 'normal');
+			th = createHead('Boolean', 'normal');
 			tr.appendChild(th);
 
 			th = createHead('typeof', 'normal');
@@ -136,10 +142,10 @@
 					tr.appendChild(td);
 				}
 
-				if (values[i]) {
-					td = createCell('+', 'equal');
+				if (Boolean(values[i])) {
+					td = createCell('true', 'true');
 				} else {
-					td = createCell('-', 'notequal');
+					td = createCell('false', 'false');
 				}
 				tr.appendChild(td);
 
