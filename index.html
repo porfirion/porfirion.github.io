@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		body {
+			font-family: Arial;
+		}
+		th {
+		  height: 100px;
+		  position: relative;
+		  vertical-align: bottom;
+		  padding: 0;
+		  line-height: 30px;
+		}
+
+		th div{
+		  position: relative;
+		  top: 0px;
+		  height: 100%;
+		}
+
+		th span {
+		  -ms-transform: rotate(90deg);
+		  -moz-transform: rotate(90deg);
+		  -webkit-transform: rotate(90deg);
+		  -o-transform: rotate(90deg);
+		  transform: rotate(90deg);
+		  position: absolute;
+		  bottom: 30px; /* 40 cos(45) = 28 with an additional 2px margin*/
+		  left: -25px; /*Because it looked good, but there is probably a mathematical link here as well*/
+		  display: inline-block;
+		  // width: 100%;
+		  width: 85px; /* 80 / cos(45) - 40 cos (45) = 85 where 80 is the height of the cell, 40 the width of the cell and 45 the transform angle*/
+		  text-align: right;
+		  // white-space: nowrap; /*whether to display in one line or not*/
+		}
+
+		tbody div {
+			border: 1px solid black;
+			border-radius: 2px;
+			width: 30px;
+			height: 30px;
+			line-height: 30px;
+			text-align: center;
+
+		}
+		.caption {
+			font-weight: bold;
+			text-align: right;
+			padding-right: 10px;
+		}
+		.equal { background: #d5ffd5; font-size: 20px; font-weight: bold; }
+		.almostequal { background: #ffffd5; font-size: 20px; font-weight: bold; }
+		.notequal { background: #ffd5d5; }
+		.wide { background: #F9F7F7; width: auto; padding: 0px 5px; }
+	</style>
+	<script>
+		function createCell(value, className) {
+			td = document.createElement('TD');
+			div = document.createElement('DIV');
+			div.innerText = value;
+			if (typeof className != 'undefined') {
+				div.setAttribute('class', className);
+			}
+			td.appendChild(div);
+			return td;	
+		}
+		function createHead(value, className) {
+			var th = document.createElement('TH');
+			if (typeof(className) == 'undefined') {
+				var div = document.createElement('DIV');
+				var span = document.createElement('SPAN');
+				span.innerText = value;
+				div.appendChild(span);
+				th.appendChild(div);
+			} else {
+				th.innerText = value;
+				th.setAttribute('class', className);
+			}
+			return th;
+		}
+
+		function createCaption(value) {
+			td = document.createElement('TD');
+			td.setAttribute('class', 'caption');
+			td.innerText = value;
+			return td;
+		}
+
+		function showTable() {
+			var captions = ["true", "false", "1", "0", "-1", "\"true\"", "\"false\"", "\"1\"", "\"0\"", "\"-1\"", "\"\"", "null", "undefined", "Infinity", "-Infinity", "[]", "{}", "[[]]", "[0]", "[1]", "NaN"];
+			var values = [true, false, 1, 0, -1, "true", "false", "1", "0", "-1", "", null, undefined, Infinity, -Infinity, [], {}, [[]], [0], [1], NaN];
+			var values2 = [true, false, 1, 0, -1, "true", "false", "1", "0", "-1", "", null, undefined, Infinity, -Infinity, [], {}, [[]], [0], [1], NaN];
+			var table = document.createElement('TABLE'), thead, tbody, tr, td, div;
+
+			thead = document.createElement('THEAD');
+
+			tr = document.createElement('TR');
+
+			tr.appendChild(document.createElement('TH'));
+
+			for (var i = 0; i < values.length; i++) {			
+				var th = createHead(captions[i]);
+				tr.appendChild(th);
+			}
+
+			th = createHead('if', 'normal');
+			tr.appendChild(th);
+
+			th = createHead('typeof', 'normal');
+			tr.appendChild(th);
+
+			th = createHead('JSON.stringify', 'normal');
+			tr.appendChild(th);
+
+			thead.appendChild(tr);
+			table.appendChild(thead);
+
+			tbody = document.createElement('TBODY');
+			for (var i = 0; i < values.length; i++) {
+				tr = document.createElement('TR');
+
+				td = createCaption(captions[i]);
+				tr.appendChild(td);
+
+				for (var j = 0; j < values.length; j++) {
+					if (values[i] === values2[j]) {
+						td = createCell('=', 'equal');
+					} else if (values[i] == values2[j]) {
+						td = createCell('≈', 'almostequal');
+					} else {
+						td = createCell('≠', 'notequal');
+					}
+					tr.appendChild(td);
+				}
+
+				if (values[i]) {
+					td = createCell('+', 'equal');
+				} else {
+					td = createCell('-', 'notequal');
+				}
+				tr.appendChild(td);
+
+				td = createCell(typeof(values[i]), 'wide');
+				tr.appendChild(td);
+
+				td = createCell(JSON.stringify(values[i]), 'wide');
+				tr.appendChild(td);
+
+				tbody.appendChild(tr);
+			}
+
+			table.appendChild(tbody);
+			document.body.appendChild(table);
+		}
+	</script>
+</head>
+<body onLoad="showTable();">
+	
+</body>
+</html>
