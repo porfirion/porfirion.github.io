@@ -6,9 +6,10 @@
 	<style>
 		body {
 			font-family: Arial;
+			font-size: 14px;
 		}
 		th {
-		  height: 100px;
+		  height: 80px;
 		  position: relative;
 		  vertical-align: bottom;
 		  padding: 0;
@@ -31,18 +32,17 @@
 		  bottom: 30px; /* 40 cos(45) = 28 with an additional 2px margin*/
 		  left: -25px; /*Because it looked good, but there is probably a mathematical link here as well*/
 		  display: inline-block;
-		  // width: 100%;
-		  width: 85px; /* 80 / cos(45) - 40 cos (45) = 85 where 80 is the height of the cell, 40 the width of the cell and 45 the transform angle*/
+		  width: 80px; /* 80 / cos(45) - 40 cos (45) = 85 where 80 is the height of the cell, 40 the width of the cell and 45 the transform angle*/
 		  text-align: right;
-		  // white-space: nowrap; /*whether to display in one line or not*/
+		  white-space: nowrap; /*whether to display in one line or not*/
 		}
 
-		tbody div {
+		.result {
 			border: 1px solid black;
 			border-radius: 2px;
-			width: 30px;
-			height: 30px;
-			line-height: 30px;
+			width: 25px;
+			height: 25px;
+			line-height: 25px;
 			text-align: center;
 
 		}
@@ -51,8 +51,9 @@
 			text-align: right;
 			padding-right: 10px;
 		}
-		.equal { background: #d5ffd5; font-size: 20px; font-weight: bold; }
-		.almostequal { background: #ffffd5; font-size: 20px; font-weight: bold; }
+		
+		.equal { background: #d5ffd5; font-size: 130%; }
+		.almostequal { background: #ffffd5; font-size: 130%; }
 		.notequal { background: #ffd5d5; }
 		.wide { background: #F9F7F7; width: auto; padding: 0px 5px; }
 		.true { background: #d5ffd5; width: auto; padding: 0px 5px; }
@@ -60,6 +61,20 @@
 
 		.normal {
 			padding: 0px 5px;
+		}
+
+		dt, dd {
+			display: inline-block;
+			height: 25px;
+			margin: 0px;
+			padding: 0px;
+			line-height: 25px;
+		}
+		dt {
+			border: 1px solid black;
+			padding: 0px 5px;
+			margin-left: 20px;
+			margin-right: 5px;
 		}
 	</style>
 	<script>
@@ -99,7 +114,7 @@
 			var captions = ["true", "false", "1", "0", "-1", "\"true\"", "\"false\"", "\"1\"", "\"0\"", "\"-1\"", "\"\"", "null", "undefined", "Infinity", "-Infinity", "[]", "{}", "[[]]", "[0]", "[1]", "NaN"];
 			var values = [true, false, 1, 0, -1, "true", "false", "1", "0", "-1", "", null, undefined, Infinity, -Infinity, [], {}, [[]], [0], [1], NaN];
 			var values2 = [true, false, 1, 0, -1, "true", "false", "1", "0", "-1", "", null, undefined, Infinity, -Infinity, [], {}, [[]], [0], [1], NaN];
-			var table = document.createElement('TABLE'), thead, tbody, tr, td, div;
+			var table = document.getElementsByTagName('table')[0], thead, tbody, tr, td, div;
 
 			thead = document.createElement('THEAD');
 
@@ -112,13 +127,13 @@
 				tr.appendChild(th);
 			}
 
-			th = createHead('Boolean', 'normal');
+			th = createHead('bool', 'normal');
 			tr.appendChild(th);
 
 			th = createHead('typeof', 'normal');
 			tr.appendChild(th);
 
-			th = createHead('JSON.stringify', 'normal');
+			th = createHead('json', 'normal');
 			tr.appendChild(th);
 
 			thead.appendChild(tr);
@@ -133,37 +148,46 @@
 
 				for (var j = 0; j < values.length; j++) {
 					if (values[i] === values2[j]) {
-						td = createCell('=', 'equal');
+						td = createCell('=', 'result equal');
 					} else if (values[i] == values2[j]) {
-						td = createCell('≈', 'almostequal');
+						td = createCell('≈', 'result almostequal');
 					} else {
-						td = createCell('≠', 'notequal');
+						td = createCell('≠', 'result notequal');
 					}
 					tr.appendChild(td);
 				}
 
 				if (Boolean(values[i])) {
-					td = createCell('true', 'true');
+					td = createCell('true', 'result true');
 				} else {
-					td = createCell('false', 'false');
+					td = createCell('false', 'result false');
 				}
 				tr.appendChild(td);
 
-				td = createCell(typeof(values[i]), 'wide');
+				td = createCell(typeof(values[i]), 'result wide');
 				tr.appendChild(td);
 
-				td = createCell(JSON.stringify(values[i]), 'wide');
+				td = createCell(JSON.stringify(values[i]), 'result wide');
 				tr.appendChild(td);
 
 				tbody.appendChild(tr);
 			}
 
 			table.appendChild(tbody);
-			document.body.appendChild(table);
+			// document.body.appendChild(table);
 		}
 	</script>
 </head>
 <body onLoad="showTable();">
-	
+	<table></table>
+	<hr/>
+	<dl class="legend">
+		<dt class="equal">=</dt><dd>x === y is true</dd>
+		<dt class="almostequal">≈</dt><dd>x == y is true</dd>
+		<dt class="notequal">≠</dt><dd>x == y is false</dd>
+		<dt class="">bool</dt><dd>Boolean(x)</dd>
+		<dt class="">typeof</dt><dd>typeof x</dd>
+		<dt class="">json</dt><dd>JSON.stringify(x)</dd>
+	</dl>
 </body>
 </html>
