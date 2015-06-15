@@ -8,6 +8,9 @@
 			font-family: Arial;
 			font-size: 14px;
 		}
+		table {
+			border-collapse: collapse;
+		}
 		th {
 		  height: 80px;
 		  position: relative;
@@ -37,6 +40,17 @@
 		  white-space: nowrap; /*whether to display in one line or not*/
 		}
 
+		td:focus::after {
+			outline: 1px solid red;
+		}
+
+		tr:hover .result {
+			/*box-shadow: inset 0px 0px 5px 0px black;*/
+		}
+		tr:hover .caption {
+			/*box-shadow: 0px 0px 10px 0px black;*/
+		}
+
 		.result {
 			border: 1px solid black;
 			border-radius: 2px;
@@ -44,7 +58,7 @@
 			height: 25px;
 			line-height: 25px;
 			text-align: center;
-
+			margin: 1px;
 		}
 		.caption {
 			font-weight: bold;
@@ -58,6 +72,16 @@
 		.wide { background: #F9F7F7; width: auto; padding: 0px 5px; }
 		.true { background: #d5ffd5; width: auto; padding: 0px 5px; }
 		.false { background: #ffd5d5; width: auto; padding: 0px 5px; }
+
+		.undefined { background: gray; font-size: 10px; }
+		.null      { background: lightgray; font-size: 10px; }
+		.nan       { background: #DA82DA; font-size: 11px; }
+		.number    { background: lime; }
+		.string    { background: #FFFF71; }
+		.object    { background: blue; }
+		.boolean   { background: skyblue; }
+		.infinity  { background: #4BFFF8; }
+		.infinity.minus  { background: #4B98FF; }
 
 		.normal {
 			padding: 0px 5px;
@@ -76,8 +100,67 @@
 			margin-left: 20px;
 			margin-right: 5px;
 		}
+
+		#addition td {
+			position: relative;
+		}
+		#addition td .result {
+			overflow: hidden;
+		}
+		#addition td:hover .result {
+			width: 211px;
+			position: absolute;
+			top: 1px;
+			left: 1px;
+			font-size: 20px;
+			z-index: 10;
+		}
 	</style>
 	<script>
+		var captions = ["true", "false", "1", "0", "-1", "\"true\"", "\"false\"", "\"1\"", "\"0\"", "\"-1\"", "\"\"", "null", "undefined", "Infinity", "-Infinity", "NaN", "[]", "{}", "[[]]", "[0]", "[1]"];
+		var values  = [true, false, 1, 0, -1, "true", "false", "1", "0", "-1", "", null, undefined, Infinity, -Infinity, NaN, [], {}, [[]], [0], [1]];
+		var values2 = [true, false, 1, 0, -1, "true", "false", "1", "0", "-1", "", null, undefined, Infinity, -Infinity, NaN, [], {}, [[]], [0], [1]];
+
+		function createTypedCell(value) {
+			td = document.createElement('TD');
+			div = document.createElement('DIV');
+			if (typeof value === 'undefined') {
+				div.textContent = 'undfnd';
+				div.setAttribute('class', 'undefined');
+			} else if (value === null) {
+				div.textContent = 'null';
+				div.setAttribute('class', 'null');
+		    } else if (typeof value === 'number') {
+				if (Number.isFinite(value)) {
+					div.textContent = value;
+					div.setAttribute('class', 'number');
+				} else if (Number.isNaN(value)) {
+					div.textContent = 'NaN';
+					div.setAttribute('class', 'nan');
+				} else if (value === Infinity) {
+					div.textContent = 'Inf';
+					div.setAttribute('class', 'infinity');
+				} else if (value === -Infinity) {
+					div.textContent = '-Inf';
+					div.setAttribute('class', 'infinity minus');
+				} else {
+					div.textContent = value.toString();
+					div.setAttribute('class', 'infinity');
+				}
+			} else if (typeof value === 'object') {
+				div.textContent = 'object';
+				div.setAttribute('class', 'object');
+			} else if (typeof value === 'boolean') {
+				div.textContent = value.toString();
+				div.setAttribute('class', 'boolean');
+			} else {
+				div.textContent = '"' + value + '"';
+				div.setAttribute('class', 'string');
+			}
+			div.setAttribute('class', div.getAttribute('class') + ' result');
+			td.appendChild(div);
+			return td;	
+		}
 		function createCell(value, className) {
 			td = document.createElement('TD');
 			div = document.createElement('DIV');
@@ -110,11 +193,8 @@
 			return td;
 		}
 
-		function showTable() {
-			var captions = ["true", "false", "1", "0", "-1", "\"true\"", "\"false\"", "\"1\"", "\"0\"", "\"-1\"", "\"\"", "null", "undefined", "Infinity", "-Infinity", "[]", "{}", "[[]]", "[0]", "[1]", "NaN"];
-			var values = [true, false, 1, 0, -1, "true", "false", "1", "0", "-1", "", null, undefined, Infinity, -Infinity, [], {}, [[]], [0], [1], NaN];
-			var values2 = [true, false, 1, 0, -1, "true", "false", "1", "0", "-1", "", null, undefined, Infinity, -Infinity, [], {}, [[]], [0], [1], NaN];
-			var table = document.getElementsByTagName('table')[0], thead, tbody, tr, td, div;
+		function showComparisonTable() {
+			var table = document.getElementById('comparison'), thead, tbody, tr, td, div;
 
 			thead = document.createElement('THEAD');
 
@@ -176,10 +256,45 @@
 			table.appendChild(tbody);
 			// document.body.appendChild(table);
 		}
+
+		function showAdditionTable() {
+			var table = document.getElementById('addition'), thead, tbody, tr, td, div;
+			thead = document.createElement('THEAD');
+
+			tr = document.createElement('TR');
+
+			tr.appendChild(document.createElement('TH'));
+
+			for (var i = 0; i < values.length; i++) {			
+				var th = createHead(captions[i]);
+				tr.appendChild(th);
+			}
+
+			thead.appendChild(tr);
+			table.appendChild(thead);
+
+			tbody = document.createElement('TBODY');
+			for (var i = 0; i < values.length; i++) {
+				tr = document.createElement('TR');
+
+				td = createCaption(captions[i]);
+				tr.appendChild(td);
+
+				for (var j = 0; j < values.length; j++) {
+					td = createTypedCell(values[i] + values2[j]);
+					tr.appendChild(td);
+				}
+
+				tbody.appendChild(tr);
+			}
+
+			table.appendChild(tbody);
+		}
 	</script>
 </head>
-<body onLoad="showTable();">
-	<table></table>
+<body onLoad="showComparisonTable();showAdditionTable();">
+	<h1>Comparison</h1>
+	<table id="comparison"></table>
 	<hr/>
 	<dl class="legend">
 		<dt class="equal">=</dt><dd>x === y is true</dd>
@@ -189,5 +304,8 @@
 		<dt class="">typeof</dt><dd>typeof x</dd>
 		<dt class="">json</dt><dd>JSON.stringify(x)</dd>
 	</dl>
+	<hr/>
+	<h1>Addition</h1>
+	<table id="addition"></table>
 </body>
 </html>
