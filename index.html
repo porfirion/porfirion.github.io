@@ -76,7 +76,7 @@
 		.undefined { background: gray; font-size: 10px; }
 		.null      { background: lightgray; font-size: 10px; }
 		.nan       { background: #DA82DA; font-size: 11px; }
-		.number    { background: lime; }
+		.number    { background: #84FF84; }
 		.string    { background: #FFFF71; }
 		.object    { background: blue; }
 		.boolean   { background: skyblue; }
@@ -117,9 +117,9 @@
 		}
 	</style>
 	<script>
-		var captions = ["true", "false", "1", "0", "-1", "\"true\"", "\"false\"", "\"1\"", "\"0\"", "\"-1\"", "\"\"", "null", "undefined", "Infinity", "-Infinity", "NaN", "[]", "{}", "[[]]", "[0]", "[1]"];
-		var values  = [true, false, 1, 0, -1, "true", "false", "1", "0", "-1", "", null, undefined, Infinity, -Infinity, NaN, [], {}, [[]], [0], [1]];
-		var values2 = [true, false, 1, 0, -1, "true", "false", "1", "0", "-1", "", null, undefined, Infinity, -Infinity, NaN, [], {}, [[]], [0], [1]];
+		var captions = ["true", "false", "1", "0", "-1", "\"true\"", "\"false\"", "\"1\"", "\"0\"", "\"-1\"", "\"\"", "null", "undefined", "Infinity", "-Infinity", "NaN", "[]", "{}", "[[]]", "[0]", "[1]", "function"];
+		var values  = [true, false, 1, 0, -1, "true", "false", "1", "0", "-1", "", null, undefined, Infinity, -Infinity, NaN, [], {}, [[]], [0], [1], function() {}];
+		var values2 = [true, false, 1, 0, -1, "true", "false", "1", "0", "-1", "", null, undefined, Infinity, -Infinity, NaN, [], {}, [[]], [0], [1], function() {}];
 
 		function createTypedCell(value) {
 			td = document.createElement('TD');
@@ -216,6 +216,9 @@
 			th = createHead('json', 'normal');
 			tr.appendChild(th);
 
+			th = createHead('num', 'normal');
+			tr.appendChild(th);
+
 			thead.appendChild(tr);
 			table.appendChild(thead);
 
@@ -248,6 +251,9 @@
 				tr.appendChild(td);
 
 				td = createCell(JSON.stringify(values[i]), 'result wide');
+				tr.appendChild(td);
+
+				td = createCell(Number(values[i]), 'result wide');
 				tr.appendChild(td);
 
 				tbody.appendChild(tr);
@@ -293,7 +299,7 @@
 	</script>
 </head>
 <body onLoad="showComparisonTable();showAdditionTable();">
-	<h1>Comparison</h1>
+	<h1>Comparison (x == y)</h1>
 	<table id="comparison"></table>
 	<hr/>
 	<dl class="legend">
@@ -303,9 +309,10 @@
 		<dt class="">bool</dt><dd>Boolean(x)</dd>
 		<dt class="">typeof</dt><dd>typeof x</dd>
 		<dt class="">json</dt><dd>JSON.stringify(x)</dd>
+		<dt class="">num</dt><dd>Number(x)</dd>
 	</dl>
 	<hr/>
-	<h1>Addition</h1>
+	<h1>Addition (x + y)</h1>
 	<table id="addition"></table>
 </body>
 </html>
