@@ -45,10 +45,17 @@
 		}
 
 		tr:hover .result {
-			/*box-shadow: inset 0px 0px 5px 0px black;*/
+			/*border-top: 1px solid gray;
+			border-bottom: 1px solid gray;*/
+			/*box-shadow: 0px 0px 5px 0px black;*/
 		}
 		tr:hover .caption {
-			/*box-shadow: 0px 0px 10px 0px black;*/
+			border-top: 1px solid gray;
+			border-bottom: 1px solid gray;
+			/*box-shadow: inset 0px 0px 10px 0px black;*/
+		}
+		tr:hover td {
+			background: #dddddd;
 		}
 
 		.result {
@@ -61,6 +68,7 @@
 			margin: 1px;
 		}
 		.caption {
+			border-radius: 5px;
 			font-weight: bold;
 			text-align: right;
 			padding-right: 10px;
@@ -73,13 +81,13 @@
 		.true { background: #d5ffd5; width: auto; padding: 0px 5px; }
 		.false { background: #ffd5d5; width: auto; padding: 0px 5px; }
 
-		.undefined { background: gray; font-size: 10px; }
-		.null      { background: lightgray; font-size: 10px; }
-		.nan       { background: #DA82DA; font-size: 11px; }
+		.undefined { background: #9A9898; }
+		.null      { background: #D6D6D6; }
+		.nan       { background: #FFBBFD; }
 		.number    { background: #84FF84; }
-		.string    { background: #FFFF71; }
-		.object    { background: blue; }
-		.boolean   { background: skyblue; }
+		.string    { background: #FFFF93; }
+		.object    { background: #7070FF; }
+		.boolean   { background: #FF8080; }
 		.infinity  { background: #4BFFF8; }
 		.infinity.minus  { background: #4B98FF; }
 
@@ -117,15 +125,15 @@
 		}
 	</style>
 	<script>
-		var captions = ["true", "false", "1", "0", "-1", "\"true\"", "\"false\"", "\"1\"", "\"0\"", "\"-1\"", "\"\"", "null", "undefined", "Infinity", "-Infinity", "NaN", "[]", "{}", "[[]]", "[0]", "[1]", "function"];
-		var values  = [true, false, 1, 0, -1, "true", "false", "1", "0", "-1", "", null, undefined, Infinity, -Infinity, NaN, [], {}, [[]], [0], [1], function() {}];
-		var values2 = [true, false, 1, 0, -1, "true", "false", "1", "0", "-1", "", null, undefined, Infinity, -Infinity, NaN, [], {}, [[]], [0], [1], function() {}];
+		var captions = ["true", "false", "1", "0", "-1", "null", "undefined", "Infinity", "-Infinity", "NaN", "\"true\"", "\"false\"", "\"1\"", "\"0\"", "\"-1\"", "\"\"", "[]", "{}", "[[]]", "[0]", "[1]", "function"];
+		var values  = [true, false, 1, 0, -1, null, undefined, Infinity, -Infinity, NaN, "true", "false", "1", "0", "-1", "", [], {}, [[]], [0], [1], function() {}];
+		var values2 = [true, false, 1, 0, -1, null, undefined, Infinity, -Infinity, NaN, "true", "false", "1", "0", "-1", "", [], {}, [[]], [0], [1], function() {}];
 
-		function createTypedCell(value) {
+		function createTypedCell(value, className) {
 			td = document.createElement('TD');
 			div = document.createElement('DIV');
 			if (typeof value === 'undefined') {
-				div.textContent = 'undfnd';
+				div.textContent = 'undefined';
 				div.setAttribute('class', 'undefined');
 			} else if (value === null) {
 				div.textContent = 'null';
@@ -138,10 +146,10 @@
 					div.textContent = 'NaN';
 					div.setAttribute('class', 'nan');
 				} else if (value === Infinity) {
-					div.textContent = 'Inf';
+					div.textContent = 'Infinity';
 					div.setAttribute('class', 'infinity');
 				} else if (value === -Infinity) {
-					div.textContent = '-Inf';
+					div.textContent = '-Infinity';
 					div.setAttribute('class', 'infinity minus');
 				} else {
 					div.textContent = value.toString();
@@ -154,10 +162,15 @@
 				div.textContent = value.toString();
 				div.setAttribute('class', 'boolean');
 			} else {
+				//string
 				div.textContent = '"' + value + '"';
 				div.setAttribute('class', 'string');
 			}
-			div.setAttribute('class', div.getAttribute('class') + ' result');
+			var additionalClass = ' result';
+			if (typeof className != 'undefined') {
+				additionalClass += ' ' + className;
+			}
+			div.setAttribute('class', div.getAttribute('class') + additionalClass);
 			td.appendChild(div);
 			return td;	
 		}
@@ -207,6 +220,9 @@
 				tr.appendChild(th);
 			}
 
+			th = createHead('', 'normal');
+			tr.appendChild(th);
+
 			th = createHead('bool', 'normal');
 			tr.appendChild(th);
 
@@ -217,6 +233,9 @@
 			tr.appendChild(th);
 
 			th = createHead('num', 'normal');
+			tr.appendChild(th);
+
+			th = createHead('str', 'normal');
 			tr.appendChild(th);
 
 			thead.appendChild(tr);
@@ -240,6 +259,9 @@
 					tr.appendChild(td);
 				}
 
+				td = createCell(null, '');
+				tr.appendChild(td);
+
 				if (Boolean(values[i])) {
 					td = createCell('true', 'result true');
 				} else {
@@ -250,10 +272,13 @@
 				td = createCell(typeof(values[i]), 'result wide');
 				tr.appendChild(td);
 
-				td = createCell(JSON.stringify(values[i]), 'result wide');
+				td = createTypedCell(JSON.stringify(values[i]), 'result wide');
 				tr.appendChild(td);
 
-				td = createCell(Number(values[i]), 'result wide');
+				td = createTypedCell(Number(values[i]), 'result wide');
+				tr.appendChild(td);
+
+				td = createTypedCell(String(values[i]), 'result wide');
 				tr.appendChild(td);
 
 				tbody.appendChild(tr);
@@ -271,7 +296,7 @@
 
 			tr.appendChild(document.createElement('TH'));
 
-			for (var i = 0; i < values.length; i++) {			
+			for (var i = 0; i < /*values.length*/ 10; i++) {			
 				var th = createHead(captions[i]);
 				tr.appendChild(th);
 			}
@@ -280,14 +305,14 @@
 			table.appendChild(thead);
 
 			tbody = document.createElement('TBODY');
-			for (var i = 0; i < values.length; i++) {
+			for (var i = 0; i < /*values.length*/ 10; i++) {
 				tr = document.createElement('TR');
 
 				td = createCaption(captions[i]);
 				tr.appendChild(td);
 
-				for (var j = 0; j < values.length; j++) {
-					td = createTypedCell(values[i] + values2[j]);
+				for (var j = 0; j < /*values.length*/ 10; j++) {
+					td = createTypedCell(values[i] + values2[j], 'wide');
 					tr.appendChild(td);
 				}
 
@@ -304,12 +329,31 @@
 	<hr/>
 	<dl class="legend">
 		<dt class="equal">=</dt><dd>x === y is true</dd>
-		<dt class="almostequal">≈</dt><dd>x == y is true</dd>
+		<dt class="almostequal">≈</dt><dd>x === y is false && x == y is true</dd>
 		<dt class="notequal">≠</dt><dd>x == y is false</dd>
+
+		<br/>
+		<br/>
+
 		<dt class="">bool</dt><dd>Boolean(x)</dd>
 		<dt class="">typeof</dt><dd>typeof x</dd>
 		<dt class="">json</dt><dd>JSON.stringify(x)</dd>
 		<dt class="">num</dt><dd>Number(x)</dd>
+		<dt class="">str</dt><dd>String(x)</dd>
+		
+		<br/>
+		<br/>
+
+		<dt class="undefined">value</dt><dd>undefined</dd>
+		<dt class="null">value</dt><dd>null</dd>
+		<dt class="nan">value</dt><dd>NaN</dd>
+		<dt class="number">value</dt><dd>Number</dd>
+		<dt class="string">value</dt><dd>String</dd>
+		<dt class="object">value</dt><dd>Object</dd>
+		<dt class="boolean">value</dt><dd>Boolean</dd>
+		<dt class="infinity">value</dt><dd>Infinity</dd>
+		<dt class="infinity minus">value</dt><dd>-Infinity</dd>
+
 	</dl>
 	<hr/>
 	<h1>Addition (x + y)</h1>
