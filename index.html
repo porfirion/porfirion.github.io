@@ -139,10 +139,7 @@
 				div.textContent = 'null';
 				div.setAttribute('class', 'null');
 		    } else if (typeof value === 'number') {
-				if (Number.isFinite(value)) {
-					div.textContent = value;
-					div.setAttribute('class', 'number');
-				} else if (Number.isNaN(value)) {
+				if (Number.isNaN && Number.isNaN(value) || value.toString() == "NaN") {
 					div.textContent = 'NaN';
 					div.setAttribute('class', 'nan');
 				} else if (value === Infinity) {
@@ -152,8 +149,8 @@
 					div.textContent = '-Infinity';
 					div.setAttribute('class', 'infinity minus');
 				} else {
-					div.textContent = value.toString();
-					div.setAttribute('class', 'infinity');
+					div.textContent = value;
+					div.setAttribute('class', 'number');
 				}
 			} else if (typeof value === 'object') {
 				div.textContent = 'object';
