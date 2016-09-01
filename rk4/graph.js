@@ -18,11 +18,13 @@ function max(arr, getter) {
 	return max;
 }
 
-function graph(canvas, positions, getter, name, color) {
+function graph(canvas, positions, getter, name, color, guide) {
 	var i, j, x, y, val;
 	var padding = 30; // отсутпы от края канфаса
 	var marksCount = 10; // количество выводимых отметок
 	var precision = 100; // точность выводимых величин
+
+	if (typeof guide == 'undefined') guide = null;
 
 	var count = positions.length;
 
@@ -37,10 +39,27 @@ function graph(canvas, positions, getter, name, color) {
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+	if (guide != null) {
+		guide = Math.round((positions.length - 1) * (guide - padding) / width);
+		guide = Math.max(guide, 0);
+		guide = Math.min(guide, count - 1);
+		ctx.save();
+		ctx.beginPath();
+		x = padding + width * guide / (count - 1);
+		ctx.moveTo(x, padding);
+		ctx.lineTo(x, padding + height);
+		ctx.stroke();
+
+		var guideVal = getter(positions[guide]);
+		guideVal = Math.round(guideVal * 10000) / 10000;
+		ctx.strokeText(guideVal, x - ctx.measureText(guideVal).width / 2, padding + height + 15);
+
+		ctx.restore();
+	}
+
 	ctx.font = "20px " + color;
 	ctx.fillText(name, width / 2 + padding - ctx.measureText(name).width / 2, 20);
 	ctx.font = "12px black";
-
 
 	ctx.save();
 	ctx.strokeStyle = 'black';
@@ -53,6 +72,8 @@ function graph(canvas, positions, getter, name, color) {
 		ctx.lineTo(width + padding, y);
 	}
 	ctx.stroke();
+	ctx.strokeText(minValue, padding / 2, height + padding + 15);
+	ctx.strokeText(maxValue, padding / 2, padding - 10);
 
 	ctx.restore();
 
@@ -61,7 +82,7 @@ function graph(canvas, positions, getter, name, color) {
 	for (i = 0; i < count; i++) {
 		val = getter(positions[i]);
 
-		x = width / (count - 1) * i;
+		x = width * i / (count - 1);
 		x = padding + x;
 
 		y = (height / interval) * (val - minValue);

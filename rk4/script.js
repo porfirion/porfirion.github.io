@@ -45,6 +45,18 @@ window.onload = function() {
 	});
 };
 
+$(window.document).on('mousemove', 'canvas', function(ev) {
+	if (resultPositions != null) {
+		visualize(resultPositions, ev.offsetX);
+	}
+});
+
+$(window.document).on('mouseout', 'canvas', function(ev) {
+	if (resultPositions != null) {
+		visualize(resultPositions);
+	}
+});
+
 function restoreParams(params) {
 	$('input[name="steps"]').val(params.steps);
 	$('input[name="time"]').val(params.time);
@@ -88,8 +100,9 @@ function execute() {
 
 }
 
-function visualize(resultPositions) {
-	graph($('#canvas1')[0], resultPositions, function(pos) { return pos.x; }, 'Position', 'red');
-	graph($('#canvas2')[0], resultPositions, function(pos) { return pos.v; }, 'Velocity', 'green');
-	graph($('#canvas3')[0], resultPositions, function(pos) { return 'acc' in pos ? pos.acc : 0; }, 'Acceleration', 'blue');
+function visualize(resultPositions, guide) {
+	if (typeof guide == 'undefined') guide = null;
+	graph($('#canvas1')[0], resultPositions, function(pos) { return pos.x; }, 'Position', 'red', guide);
+	graph($('#canvas2')[0], resultPositions, function(pos) { return pos.v; }, 'Velocity', 'green', guide);
+	graph($('#canvas3')[0], resultPositions, function(pos) { return 'acc' in pos ? pos.acc : 0; }, 'Acceleration', 'blue', guide);
 }
