@@ -1,0 +1,22 @@
+html, body {
+	height: 100%;
+	position: relative;
+}
+
+body {
+	
+}
+
+canvas {
+	border: 1px solid black;
+}
+
+.modifierButton {
+/*	cursor: pointer;
+	background: none;
+	box-shadow: none;
+	border: 1px solid #000;
+	border-radius: 3px;
+	margin: 3px;
+	padding: 5px 10px;*/
+}

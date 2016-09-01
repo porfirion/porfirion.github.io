@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title></title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<script type="text/javascript" src="rk4.js"></script>
+	<script type="text/javascript" src="graph.js"></script>
+	<script type="text/javascript" src="script.js"></script>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+<body>
+	<div class="container">
+		<div class="header"><h1>RK4</h1></div>
+		<div class="row">
+			<div class="col-md-6">
+				<canvas id="canvas1" width="400" height="200"></canvas>
+				<canvas id="canvas2" width="400" height="200"></canvas>
+				<canvas id="canvas3" width="400" height="200"></canvas>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group">
+					<label for="x">X0</label>
+					<input id="x" type="text" name="x" value="0" class="form-control"/>
+				</div>
+				<div class="form-group">
+					<label for="v">V0</label>
+					<input id="v" type="text" name="v" value="10" class="form-control"/>
+				</div>
+				<div class="form-group">
+					<label for="time">Time</label>
+					<input id="time" type="text" name="time" value="10.0" class="form-control"/>
+				</div>
+				<div class="form-group">
+					<div class="btn-group" role="group">
+						<button class="btn btn-default btn-sm modifierButton" data-time="1.0">1.0</button>
+						<button class="btn btn-default btn-sm modifierButton" data-time="10.0">10.0</button>
+						<button class="btn btn-default btn-sm modifierButton" data-time="20.0">20.0</button>
+						<button class="btn btn-default btn-sm modifierButton" data-time="100.0">100.0</button>
+						<button class="btn btn-default btn-sm modifierButton" data-time="200.0">200.0</button>
+						<button class="btn btn-default btn-sm modifierButton" data-time="500.0">500.0</button>
+						<button class="btn btn-default btn-sm modifierButton" data-time="1000.0">1000.0</button>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="steps">Steps</label for="">
+					<input id="steps" type="text" name="steps" value="100" class="form-control"/>
+				</div>
+				<div class="form-group">
+					<div class="btn-group" role="group">
+						<button class="btn btn-default btn-sm modifierButton" data-steps="10">10</button>
+						<button class="btn btn-default btn-sm modifierButton" data-steps="100">100</button>
+						<button class="btn btn-default btn-sm modifierButton" data-steps="200">200</button>
+						<button class="btn btn-default btn-sm modifierButton" data-steps="500">500</button>
+						<button class="btn btn-default btn-sm modifierButton" data-steps="600">600</button>
+						<button class="btn btn-default btn-sm modifierButton" data-steps="700">700</button>
+						<button class="btn btn-default btn-sm modifierButton" data-steps="800">800</button>
+						<button class="btn btn-default btn-sm modifierButton" data-steps="1000">1000</button>
+						<button class="btn btn-default btn-sm modifierButton" data-steps="10000">10000</button>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="acc">Acceleration <span class="label label-default">javascript expression</span></label>
+					<input id="acc" type="text" name="acc" value="0" class="form-control"/>
+				</div>
+				<div class="form-group">
+					<div class="btn-group" role="group">
+						<button class="btn btn-default btn-sm modifierButton" data-acc="0">Zero</button>
+						<button class="btn btn-default btn-sm modifierButton" data-acc="1">Const</button>
+						<button class="btn btn-default btn-sm modifierButton" data-acc="t">T</button>
+						<button class="btn btn-default btn-sm modifierButton" data-acc="t * t">T^2</button>
+						<button class="btn btn-default btn-sm modifierButton" data-acc="Math.abs(t - 5) - 3.5" data-time="10">V for vendetta</button>
+						<button class="btn btn-default btn-sm modifierButton" data-acc="Math.sin(t) - 0.22" data-time="20.0">Sin</button>
+						<button class="btn btn-default btn-sm modifierButton" data-acc="state.v - state.x" data-time="25">Fractal</button>
+						<button class="btn btn-default btn-sm modifierButton" data-acc="Math.abs(state.v) - state.x" data-time="1000" data-steps="800">Periodic</button>
+					</div>
+				</div>
+				<div class="form-group">
+					<button class="btn btn-primary" id="execute">Simulate</button>
+				</div>
+				<div class="panel panel-info">
+					<div class="panel-heading"><h4 class="panel-title">Result</h4></div> 
+					<div class="panel-body results"></div>
+				</div>
+			</div>
+		</div>
+		<div class="footer"></div>
+	</div>
+</body>
+</html>
