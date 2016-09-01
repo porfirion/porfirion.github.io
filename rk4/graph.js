@@ -31,7 +31,11 @@ function graph(canvas, positions, getter, name, color, guide) {
 	var maxValue = max(positions, getter);
 	var minValue = min(positions, getter);
 	var interval = maxValue - minValue;
-	if (interval == 0) { maxValue = minValue + 10; interval = 10;}
+	if (interval == 0) { 
+		maxValue = maxValue + 5
+		minValue = minValue - 4; 
+		interval = 9;
+	}
 
 	var width = canvas.width - padding * 2;
 	var height = canvas.height - padding * 2;
