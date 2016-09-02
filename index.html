@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Document</title>
+	<title>JavaScript Comparison table</title>
+	<meta name="description" content="Comparison table of values of different types in javascript (strict / not strict equality). Plus type conversions">
+	<meta name="keywords" content="table javascript equality strict equality identity  comparing values of different types ecma script equal not equal">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 	<style>
 		body {
 			font-family: Arial;
@@ -122,6 +125,9 @@
 			left: 1px;
 			font-size: 20px;
 			z-index: 10;
+		}
+		.footer {
+			padding: 20px;
 		}
 	</style>
 	<script>
@@ -321,41 +327,53 @@
 	</script>
 </head>
 <body onLoad="showComparisonTable();showAdditionTable();">
-	<h1>Comparison (x == y)</h1>
-	<table id="comparison"></table>
-	<hr/>
-	<dl class="legend">
-		<dt class="equal">=</dt><dd>x === y is true</dd>
-		<dt class="almostequal">≈</dt><dd>x === y is false && x == y is true</dd>
-		<dt class="notequal">≠</dt><dd>x == y is false</dd>
+	<!-- Yandex.Metrika counter --> 
+	<script type="text/javascript"> (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter39382395 = new Ya.Metrika({ id:39382395, clickmap:true, trackLinks:true, accurateTrackBounce:true, trackHash:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = "https://mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks"); </script> <noscript><div><img src="https://mc.yandex.ru/watch/39382395" style="position:absolute; left:-9999px;" alt="" /></div></noscript> 
+	<!-- /Yandex.Metrika counter -->
+	<div class="container">
+		<h1>JavaScript Comparison (x == y / x === y) 
+			<span style="float: right;">
+				<script src="//yastatic.net/es5-shims/0.0.2/es5-shims.min.js"></script>
+				<script src="//yastatic.net/share2/share.js"></script>
+				<div class="ya-share2" data-services="facebook,gplus,twitter,linkedin,vkontakte,lj" data-counter="" data-lang="en"></div>
+			</span>
+		</h1>
+		<table id="comparison"></table>
+		<hr/>
+		<dl class="legend">
+			<dt class="equal">=</dt><dd>x === y is true</dd>
+			<dt class="almostequal">≈</dt><dd>x === y is false && x == y is true</dd>
+			<dt class="notequal">≠</dt><dd>x == y is false</dd>
 
-		<br/>
-		<br/>
+			<br/>
+			<br/>
 
-		<dt class="">bool</dt><dd>Boolean(x)</dd>
-		<dt class="">typeof</dt><dd>typeof x</dd>
-		<dt class="">json</dt><dd>JSON.stringify(x)</dd>
-		<dt class="">num</dt><dd>Number(x)</dd>
-		<dt class="">str</dt><dd>String(x)</dd>
-		
-		<br/>
-		<br/>
+			<dt class="">bool</dt><dd>Boolean(x)</dd>
+			<dt class="">typeof</dt><dd>typeof x</dd>
+			<dt class="">json</dt><dd>JSON.stringify(x)</dd>
+			<dt class="">num</dt><dd>Number(x)</dd>
+			<dt class="">str</dt><dd>String(x)</dd>
+			
+			<br/>
+			<br/>
 
-		<dt class="undefined">value</dt><dd>undefined</dd>
-		<dt class="null">value</dt><dd>null</dd>
-		<dt class="nan">value</dt><dd>NaN</dd>
-		<dt class="number">value</dt><dd>Number</dd>
-		<dt class="string">value</dt><dd>String</dd>
-		<dt class="object">value</dt><dd>Object</dd>
-		<dt class="boolean">value</dt><dd>Boolean</dd>
-		<dt class="infinity">value</dt><dd>Infinity</dd>
-		<dt class="infinity minus">value</dt><dd>-Infinity</dd>
+			<dt class="undefined">value</dt><dd>undefined</dd>
+			<dt class="null">value</dt><dd>null</dd>
+			<dt class="nan">value</dt><dd>NaN</dd>
+			<dt class="number">value</dt><dd>Number</dd>
+			<dt class="string">value</dt><dd>String</dd>
+			<dt class="object">value</dt><dd>Object</dd>
+			<dt class="boolean">value</dt><dd>Boolean</dd>
+			<dt class="infinity">value</dt><dd>Infinity</dd>
+			<dt class="infinity minus">value</dt><dd>-Infinity</dd>
 
-	</dl>
-	<hr/>
-	<h1>Addition (x + y)</h1>
-	<table id="addition"></table>
-
+		</dl>
+		<hr/>
+		<h1>Addition (x + y)</h1>
+		<table id="addition"></table>
+		<div class="footer">
+		</div>
+	</div>
 	<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
