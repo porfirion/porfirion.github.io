@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="normalize_wheel.js"></script>
+	<script src="script.js"></script>
+
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+</head>
+<body onLoad="start();">
+	<form>
+		Scale mode: 
+		<input id="scaleModeManual" name="scaleMode" type="radio" value="manual" checked="true"/>
+		<label for="scaleModeManual">Manual</label>
+		<input id="scaleModeAuto" name="scaleMode" type="radio" value="auto"/>
+		<label for="scaleModeAuto">Auto</label>
+	</form>
+	<div id="resizable" style="width: 640px; height: 480px;">
+		<canvas id="canvas"/>
+	</div>
+	<pre id="viewport-info">
+		
+	</pre>
+</body>
+</html>
