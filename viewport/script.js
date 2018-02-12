@@ -25,11 +25,11 @@ function start() {
 	// функция, выполняющаяся на каждом фрейме
 	function frame() {
 		draw(ctx, viewport);
-		// window.requestAnimationFrame(frame);
+		window.requestAnimationFrame(frame);
 	}
 
 	function forceDraw() {
-		draw(ctx, viewport);
+		// draw(ctx, viewport);
 	}
 	
 
@@ -43,7 +43,7 @@ function start() {
 	image.onload = function() {
 		viewport.setPos(
 			image.naturalWidth / 2,
- 			-image.naturalHeight / 2
+			-image.naturalHeight / 2
 		)
 
 		forceDraw();
@@ -201,10 +201,14 @@ Viewport.prototype.updateInfo = function() {
 function draw(ctx, viewport) {
 	ctx.clearRect(0, 0, viewport.width, viewport.height);
 	
-	// рисуем бегемота
-	var pos = viewport.toCanvas( viewport.fromReal({x: 0, y: 0}) ),
+	var pos, size;
+
+	if (image.complete == true) {
+		// рисуем бегемота
+		pos = viewport.toCanvas( viewport.fromReal({x: 0, y: 0}) );
 		size = viewport.fromRealSize( {width: image.naturalWidth, height: image.naturalHeight} );
-	ctx.drawImage(image, 0, 0, image.naturalWidth, image.naturalHeight, pos.x, pos.y, size.width, size.height);
+		ctx.drawImage(image, 0, 0, image.naturalWidth, image.naturalHeight, pos.x, pos.y, size.width, size.height);
+	}
 
 	// рисуем точки
 	for (var i = 0; i < points.length; i++) {
@@ -274,5 +278,5 @@ function drawViewportSize(ctx, viewport) {
 }
 
 function randomColor() {
-    return '#' + (~~(Math.random() * 255)).toString(16) + (~~(Math.random() * 255)).toString(16) + (~~(Math.random() * 255)).toString(16);
+	return '#' + (~~(Math.random() * 255)).toString(16) + (~~(Math.random() * 255)).toString(16) + (~~(Math.random() * 255)).toString(16);
 }
