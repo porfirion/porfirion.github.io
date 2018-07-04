@@ -14,12 +14,23 @@
 		table {
 			border-collapse: collapse;
 		}
+
+		@media screen {
+			
+		}
+		.container {
+			width: 1200px;
+			padding: 0!important;
+			margin: auto!important;
+		}
+
 		th {
 		  height: 80px;
 		  position: relative;
 		  vertical-align: bottom;
 		  padding: 0;
 		  line-height: 30px;
+		  text-align: center;
 		}
 
 		th div{
@@ -53,8 +64,8 @@
 			/*box-shadow: 0px 0px 5px 0px black;*/
 		}
 		tr:hover .caption {
-			border-top: 1px solid gray;
-			border-bottom: 1px solid gray;
+			/*border-top: 1px solid gray;
+			border-bottom: 1px solid gray;*/
 			/*box-shadow: inset 0px 0px 10px 0px black;*/
 		}
 		tr:hover td {
@@ -79,6 +90,7 @@
 		
 		.equal { background: #d5ffd5; font-size: 130%; }
 		.almostequal { background: #ffffd5; font-size: 130%; }
+		.moreless { background: #ffe5be; font-size: 130%; }
 		.notequal { background: #ffd5d5; }
 		.wide { background: #F9F7F7; width: auto; padding: 0px 5px; }
 		.true { background: #d5ffd5; width: auto; padding: 0px 5px; }
@@ -132,9 +144,9 @@
 		}
 	</style>
 	<script>
-		var captions = ["true", "false", "1", "0", "-1", "null", "undefined", "Infinity", "-Infinity", "NaN", "\"true\"", "\"false\"", "\"1\"", "\"0\"", "\"-1\"", "\"\"", "[]", "{}", "[[]]", "[0]", "[1]", "function"];
-		var values  = [true, false, 1, 0, -1, null, undefined, Infinity, -Infinity, NaN, "true", "false", "1", "0", "-1", "", [], {}, [[]], [0], [1], function() {}];
-		var values2 = [true, false, 1, 0, -1, null, undefined, Infinity, -Infinity, NaN, "true", "false", "1", "0", "-1", "", [], {}, [[]], [0], [1], function() {}];
+		var captions = ["true", "false", "1", "0", "-1", "null", "undefined", "Infinity", "-Infinity", "\"true\"", "\"false\"", "\"1\"", "\"0\"", "\"-1\"", "\"\"", "[]", "{}", "[[]]", "[0]", "[1]", "function", "NaN"];
+		var values  = [true, false, 1, 0, -1, null, undefined, Infinity, -Infinity, "true", "false", "1", "0", "-1", "", [], {}, [[]], [0], [1], function() {}, NaN];
+		var values2 = [true, false, 1, 0, -1, null, undefined, Infinity, -Infinity, "true", "false", "1", "0", "-1", "", [], {}, [[]], [0], [1], function() {}, NaN];
 
 		function createTypedCell(value, className) {
 			td = document.createElement('TD');
@@ -227,19 +239,19 @@
 			th = createHead('', 'normal');
 			tr.appendChild(th);
 
-			th = createHead('bool', 'normal');
+			th = createHead('Boolean(x)', 'normal');
 			tr.appendChild(th);
 
-			th = createHead('typeof', 'normal');
+			th = createHead('typeof(x)', 'normal');
 			tr.appendChild(th);
 
 			th = createHead('json', 'normal');
 			tr.appendChild(th);
 
-			th = createHead('num', 'normal');
+			th = createHead('Number(x)', 'normal');
 			tr.appendChild(th);
 
-			th = createHead('str', 'normal');
+			th = createHead('String(x)', 'normal');
 			tr.appendChild(th);
 
 			thead.appendChild(tr);
@@ -253,13 +265,43 @@
 				tr.appendChild(td);
 
 				for (var j = 0; j < values.length; j++) {
+					var rs = [];
 					if (values[i] === values2[j]) {
-						td = createCell('=', 'result equal');
-					} else if (values[i] == values2[j]) {
-						td = createCell('≈', 'result almostequal');
-					} else {
-						td = createCell('≠', 'result notequal');
+						rs.push("===");
+					} else  if (values[i] == values2[j]) {
+						rs.push("==");
+					}  
+					if (values[i] < values2[j]) {
+						rs.push("<");
+					}  
+					if (values[i] > values2[j]) {
+						rs.push(">");
 					}
+
+					if (rs.length === 0) {
+						td = createCell('≠', 'result notequal');
+					} else if (rs.length === 1) {
+						switch (rs[0]) {
+							case "===": 
+								td = createCell('=', 'result equal');
+								break;
+							case "==": 
+								td = createCell('≈', 'result almostequal');
+								break;
+							case "<": 
+								td = createCell('<', 'result moreless');
+								break;
+							case ">": 
+								td = createCell('>', 'result moreless');
+								break;
+							default:
+								td = createCell('ukn', 'result notequal');
+								break;
+						}
+					} else {
+						td = createCell(rs.join(' '), 'result wide');
+					}
+					
 					tr.appendChild(td);
 				}
 
@@ -332,7 +374,7 @@
 	<script type="text/javascript"> (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter39382395 = new Ya.Metrika({ id:39382395, clickmap:true, trackLinks:true, accurateTrackBounce:true, trackHash:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = "https://mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks"); </script> <noscript><div><img src="https://mc.yandex.ru/watch/39382395" style="position:absolute; left:-9999px;" alt="" /></div></noscript> 
 	<!-- /Yandex.Metrika counter -->
 	<div class="container">
-		<h1>JavaScript Comparison (x == y / x === y) 
+		<h1>JavaScript Comparison (x === y / x == y / x < y / x > y / x ≠ y) 
 			<span style="float: right;">
 				<script src="//yastatic.net/es5-shims/0.0.2/es5-shims.min.js"></script>
 				<script src="//yastatic.net/share2/share.js"></script>
@@ -344,16 +386,18 @@
 		<dl class="legend">
 			<dt class="equal">=</dt><dd>x === y is true</dd>
 			<dt class="almostequal">≈</dt><dd>x === y is false && x == y is true</dd>
-			<dt class="notequal">≠</dt><dd>x == y is false</dd>
+			<dt class="moreless"><</dt><dd>x < y is true</dd>
+			<dt class="moreless">></dt><dd>x > y is true</dd>
+			<dt class="notequal">≠</dt><dd>x == y is false && x < y is false && x > y is false</dd>
 
 			<br/>
 			<br/>
 
-			<dt class="">bool</dt><dd>Boolean(x)</dd>
-			<dt class="">typeof</dt><dd>typeof x</dd>
+			<!-- <dt class="">bool</dt><dd>Boolean(x)</dd> -->
+			<!-- <dt class="">typeof</dt><dd>typeof x</dd> -->
 			<dt class="">json</dt><dd>JSON.stringify(x)</dd>
-			<dt class="">num</dt><dd>Number(x)</dd>
-			<dt class="">str</dt><dd>String(x)</dd>
+			<!-- <dt class="">num</dt><dd>Number(x)</dd> -->
+			<!-- <dt class="">str</dt><dd>String(x)</dd> -->
 			
 			<br/>
 			<br/>
