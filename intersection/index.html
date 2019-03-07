@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Document</title>
+		<script>
+			"use strict";
+			function Rect(l, t, r, b, color, fill) {
+				this.left = l;
+				this.top = t;
+				this.right = r;
+				this.bottom = b;
+				this.color = typeof color != 'undefined' ? color : null;
+				this.fill = typeof fill != 'undefined' ? fill : null;
+
+				if (this.color == null && this.fill == null) {
+
+				}
+			}
+
+			function drawRect(ctx, rect) {
+				ctx.save();
+
+				if (rect.color != null) {
+					ctx.strokeStyle = rect.color;
+					ctx.strokeRect(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
+				}
+				
+				if (rect.fill != null) {
+					ctx.fillStyle = rect.fill;
+					ctx.globalAlpha = 0.3;
+					ctx.fillRect(rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
+				}
+
+				ctx.restore();
+			}
+
+			function drawRects() {
+				for (var i = 0; i < rects.length; i++) {
+					drawRect(ctx, rects[i])
+				}
+			}
+
+			function drawAll() {
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+				drawRects();
+			}
+
+			var textures = [],
+				clip = new Rect(350, 250, 550, 450, 'blue'),
+				rects = [],
+				canvas,
+				ctx,
+				clickPos = null,
+				clickClip = null;
+
+			textures.push(new Rect(100, 50, 400, 150, 'red'));
+			textures.push(new Rect(100, 200, 400, 400, 'red'));
+			textures.push(new Rect(500, 50, 700, 150, 'red'));
+			textures.push(new Rect(500, 200, 700, 400, 'red'));
+			textures.push(new Rect(100, 450, 700, 750, 'red'));
+
+			rects.push.apply(rects, textures);
+			rects.push(clip);
+
+			function intersectOne(tex, clip) {
+				if (clip.right > tex.left && clip.left < tex.right
+					&& clip.bottom > tex.top && clip.top < tex.bottom) {
+
+					var l, t, r, b;
+
+					if (tex.top < clip.top) {
+						t = tex.top;
+						b = clip.top;
+						l = tex.left;
+						r = tex.right;
+						rects.push(new Rect(l, t, r, b, 'lime', 'lime'));
+					}
+
+					if (tex.bottom > clip.bottom) {
+						l = tex.left;
+						r = tex.right;
+						t = clip.bottom;
+						b = tex.bottom;
+						rects.push(new Rect(l, t, r, b, 'yellow', 'yellow'));
+					}
+
+					if (clip.left > tex.left) {
+						l = tex.left;
+						r = clip.left;
+						t = Math.max(tex.top, clip.top);
+						b = Math.min(tex.bottom, clip.bottom);
+						rects.push(new Rect(l, t, r, b, 'purple', 'purple'));
+					}
+
+					if (clip.right < tex.right) {
+						l = clip.right;
+						r = tex.right;
+						t = Math.max(tex.top, clip.top);
+						b = Math.min(tex.bottom, clip.bottom);
+						rects.push(new Rect(l, t, r, b, 'cyan', 'cyan'));
+					}
+				}
+			}
+
+			function intersectAll() {
+				rects = [];
+				rects.push.apply(rects, textures);
+				rects.push(clip);
+
+				for (var i = 0; i < textures.length; i++) {
+					intersectOne(textures[i], clip);
+				}
+
+				drawAll();
+			}
+
+			function execute() {
+				window.canvas = window.document.getElementById("canv");
+				window.ctx = canvas.getContext("2d");
+
+				canvas.addEventListener('mousedown', function(event) { 
+					clickPos = {x: event.offsetX, y: event.offsetY};
+					clickClip = new Rect(clip.left, clip.top, clip.right, clip.bottom, clip.color);
+				});
+
+				canvas.addEventListener('mousemove', function(event) { 
+					if (clickPos != null) {
+						var current = {x: event.offsetX, y: event.offsetY};
+						var dx = current.x - clickPos.x;
+						var dy = current.y - clickPos.y;
+
+						clip.left = clickClip.left + dx;
+						clip.right = clickClip.right + dx;
+						clip.top = clickClip.top + dy;
+						clip.bottom = clickClip.bottom + dy;
+
+						// console.log(clip);
+						// console.log(clickClip);
+
+						intersectAll();
+					} else {
+						// console.log('noclickpos');
+					}
+				});
+				canvas.addEventListener('mouseup', function(event) { 
+					clickPos = null;
+					clickClip = null;
+					intersectAll();
+				});
+				canvas.addEventListener('mouseout', function(event) { 
+					clickPos = null;
+					clickClip = null;
+					intersectAll();
+				});
+
+				intersectAll();
+			}
+		</script>
+	</head>
+	<body onload="execute()">
+		<canvas id="canv" width="800" height="800" style="border: 1px solid black"/>
+	</body>
+</html>
